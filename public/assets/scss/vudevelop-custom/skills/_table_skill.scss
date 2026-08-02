@@ -1,0 +1,45 @@
+.table-responsive-custom {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* cuộn mượt trên mobile */
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.08);
+    background: #fff;
+}
+
+.skills__ {
+    min-width: 800px; /* giúp hiển thị đủ nội dung trước khi cuộn */
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.skills__ th,
+.skills__ td {
+    padding: 10px 14px;
+    white-space: nowrap; /* tránh xuống dòng */
+}
+
+.skills__ th {
+    background: #343a40;
+    color: #fff;
+    text-align: center;
+}
+
+.skills__ tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.skills__ a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+.skills__ a:hover {
+    text-decoration: underline;
+}
+
+/* Tùy chọn: hiệu ứng hover hàng */
+.skills__ tbody tr:hover {
+    background-color: #eef6ff;
+    transition: 0.2s;
+}

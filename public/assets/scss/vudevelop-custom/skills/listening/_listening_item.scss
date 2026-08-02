@@ -1,0 +1,147 @@
+.listening_item {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    transition: all 0.25s ease-in-out;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .item__title {
+        font-size: 1.25rem;
+        color: #212529;
+        padding-left: 32px;
+        margin-bottom: 0.75rem;
+        //
+        position: relative;
+
+        /* Tạo điểm nhấn nhỏ */
+        &::before {
+            content: "🎧";
+            position: absolute;
+            color: #0d6efd;
+            //
+            left: 0px;
+            top: 0px;
+            //
+            width: 24px;
+            height: 24px;
+        }
+    }
+
+    strong {
+        color: #000000;
+    }
+
+    .item__info {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+
+        div {
+            line-height: 1.5;
+            strong {
+                color: #212529;
+                font-weight: 600;
+                min-width: 90px;
+                display: inline-block;
+            }
+        }
+    }
+
+    //
+    .item__transcript {
+        margin-top: 2rem;
+
+        .transcript__title {
+            font-size: 1.4rem;
+            border-bottom: 2px solid #0d6efd;
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        .transcript__meta {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: #eef5ff;
+            }
+
+            ul li {
+                font-size: 0.95rem;
+                color: #333;
+                strong {
+                    color: #0d6efd;
+                }
+            }
+        }
+
+        .transcript__content {
+            line-height: 1.7;
+            font-size: 1rem;
+            color: #212529;
+        }
+    }
+
+    //
+    .transcript__meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        line-height: 1.5;
+    }
+
+    .translation__section {
+        .table {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            overflow: hidden;
+
+            thead {
+                background-color: #e8f8ee;
+                th {
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+            }
+
+            tbody tr {
+                transition: all 0.2s ease-in-out;
+
+                &:hover {
+                    background-color: #f9fffa;
+                    transform: translateX(2px);
+                }
+
+                td {
+                    vertical-align: middle;
+                    font-size: 0.95rem;
+                }
+
+                .badge {
+                    font-size: 0.8rem;
+                    background-color: #dfffe3;
+                    border: 1px solid #b6efb9;
+                }
+            }
+        }
+
+        .alert {
+            background-color: #f9f9f9;
+            border-color: #e5e5e5;
+        }
+    }
+}

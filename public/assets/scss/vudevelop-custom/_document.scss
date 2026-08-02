@@ -1,0 +1,66 @@
+.document__tree {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .document__item {
+        border-left: 3px solid #3b82f6;
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .document__item h5 {
+        color: #2563eb;
+    }
+
+    .ms-3,
+    .ms-4,
+    .ms-5 {
+        position: relative;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -12px;
+            width: 2px;
+            height: 100%;
+            background-color: #e5e7eb;
+        }
+    }
+
+    ul {
+        list-style: none;
+        margin: 0.25rem 0 0 1rem;
+        padding: 0;
+
+        li {
+            position: relative;
+            padding: 4px 0 4px 20px;
+            color: #475569;
+            font-size: 0.95rem;
+
+            &:before {
+                content: "🎧";
+                position: absolute;
+                left: 0;
+                top: 2px;
+            }
+
+            &:hover {
+                color: #0f172a;
+                font-weight: 500;
+            }
+        }
+    }
+}

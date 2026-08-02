@@ -1,0 +1,64 @@
+/* Card chính */
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.4rem;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Màu riêng từng chủ đề */
+.vocabulary .card-header {
+    background-color: #00b894;
+}
+.grammar .card-header {
+    background-color: #0984e3;
+}
+.skills .card-header {
+    background-color: #6c5ce7;
+}
+
+.card-body {
+    text-align: center;
+    padding: 25px;
+}
+
+/* Card con của kỹ năng */
+.skill__card {
+    border: none;
+    border-radius: 14px;
+    text-align: center;
+    background: #f5f4ff;
+    padding: 20px 15px;
+    transition: all 0.3s ease;
+}
+
+.skill__card:hover {
+    background: #e8e4ff;
+    transform: translateY(-5px);
+}
+
+.skill-icon {
+    font-size: 2rem;
+    color: #6c5ce7;
+    margin-bottom: 10px;
+}
+
+.skill-title {
+    font-weight: 600;
+    color: #333;
+}

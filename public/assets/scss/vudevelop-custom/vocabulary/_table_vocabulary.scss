@@ -1,0 +1,129 @@
+// .header-row {
+//     background: #212529;
+//     color: #fff;
+//     font-weight: bold;
+//     text-align: center;
+//     padding: 8px 0;
+// }
+
+// .word-row {
+//     background: #f1f3f5;
+//     font-weight: bold;
+//     text-align: center;
+// }
+
+// .pos-row {
+//     border-top: 1px solid #dee2e6;
+//     text-align: center;
+// }
+
+// .meta {
+//     font-size: 0.85rem;
+//     color: #6c757d;
+// }
+
+// .header-row {
+//     background: #212529;
+//     color: #fff;
+//     font-weight: bold;
+//     text-align: center;
+//     padding: 8px 0;
+// }
+
+// .word-row {
+//     background: #f1f3f5;
+//     font-weight: bold;
+//     text-align: center;
+// }
+
+// .pos-row {
+//     border-top: 1px solid #dee2e6;
+//     text-align: center;
+// }
+
+// .meta {
+//     font-size: 0.85rem;
+//     color: #6c757d;
+// }
+
+// /* thêm để tránh cột bị co */
+// .table-scroll .col-1,
+// .table-scroll .col-2 {
+//     min-width: 120px;
+// }
+
+/* wrapper cho cuộn ngang */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* cố định header khi cuộn dọc trong vùng .table-responsive */
+.vocab-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #212529;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.vocab-table th small {
+    display: block;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* style dòng dữ liệu */
+.vocab-table tbody tr.word-row {
+    background: #f1f3f5;
+    font-weight: 600;
+}
+
+.vocab-table tbody tr.pos-row {
+    background: #fff;
+    border-top: 1px solid #e9ecef;
+    font-weight: 500;
+}
+
+.vocab-table td,
+.vocab-table th {
+    vertical-align: middle;
+    text-align: center;
+    padding: 0.6rem 0.75rem;
+    white-space: normal; /* cho phép wrap bên trong ô nếu cần */
+}
+
+/* badges spacing */
+.vocab-table .badge {
+    margin-right: 0.35rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+
+/* Nếu muốn bắt buộc mỗi cột tối thiểu bao nhiêu px (ngừa co quá mức) */
+.vocab-table col.word-col {
+    width: 180px;
+}
+.vocab-table col.uk-col {
+    width: 120px;
+}
+.vocab-table col.us-col {
+    width: 120px;
+}
+.vocab-table col.pos-col {
+    width: 90px;
+}
+.vocab-table col.meaning-col {
+    width: 200px;
+}
+.vocab-table col.example-col {
+    width: 300px;
+}
+.vocab-table col.topic-col {
+    width: 150px;
+}
+.vocab-table col.ref-col {
+    width: 160px;
+}

@@ -1,0 +1,80 @@
+.word-stage {
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    border: 2px solid #e1e1e1;
+}
+
+/* Màu riêng cho từng giai đoạn */
+.stage-1 {
+    background: #e8f7ff;
+    /* xanh nhạt */
+    border-color: #3498db;
+}
+
+.stage-2 {
+    background: #fef9e7;
+    /* vàng nhạt */
+    border-color: #f1c40f;
+}
+
+.stage-3 {
+    background: #fceae8;
+    /* đỏ nhạt */
+    border-color: #e74c3c;
+}
+
+.word-stage h5 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.field {
+    margin-bottom: 12px;
+    font-size: 15px;
+    display: block;
+}
+
+.field b {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+/* Phân cấp kiểu cây */
+.tree {
+    list-style: none;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;
+    margin: 5px 0;
+}
+
+.tree li {
+    margin: 4px 0;
+    position: relative;
+}
+
+.tree li::before {
+    content: "•";
+    position: absolute;
+    left: -14px;
+    color: #16a085;
+}
+
+.old {
+    background: #eafaf1;
+    color: #27ae60;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.new {
+    background: #fdecea;
+    color: #c0392b;
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}

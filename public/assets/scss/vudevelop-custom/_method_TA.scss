@@ -1,0 +1,78 @@
+.controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 18px 0;
+}
+
+.btn {
+    background: var(--card);
+    border: 1px solid #e6eef0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn.active {
+    box-shadow: 0 6px 18px rgba(14, 165, 164, 0.12);
+    border-color: rgba(14, 165, 164, 0.25);
+}
+
+.skill-card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+}
+
+.skill-card h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+}
+
+.skill-card .desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.level {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 8px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.level h4 {
+    margin: 0 0 6px;
+    font-size: 14px;
+}
+
+.level ul {
+    margin: 0;
+    padding-left: 18px;
+    color: #0f172a;
+}
+
+.level li {
+    margin: 6px 0;
+    font-size: 13px;
+}
+
+/* Highlighting when a level is selected */
+.highlight .level {
+    opacity: 0.25;
+}
+
+.highlight .level[data-level="1"],
+.highlight .level[data-level="2"],
+.highlight .level[data-level="3"],
+.highlight .level[data-level="4"] {
+    opacity: 1;
+}
