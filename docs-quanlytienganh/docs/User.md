@@ -214,7 +214,7 @@ $grammarCategories = GrammarCategory::with([
     $examplePassed = $sections->where('section_name', 'Ví Dụ (Examples)')->where('status', 'Đạt')->isNotEmpty();
     
     // Đóng gói mảng 'sections_status' truyền trực tiếp cho view để hiển thị 3 dấu chấm chính xác
-]);
+});
 ```
 
 ## 🏅 6. Thành Tựu Học Tập (Achievements) ⭐ MỚI
@@ -396,4 +396,3 @@ $monthlyStats = $reviewTimeline->groupBy(fn($i) =>
 - [x] **Bước 11:** Bổ sung **Section "Thành Tựu Học Tập" (Achievements)** — 14 huy hiệu động, cơ chế tự động unlock thời gian thực, đồng bộ hóa triệt để pips tiến trình lý thuyết (Formula, Usage, Examples) sửa lỗi logic đếm chuẩn từ database (status='Đạt').
 - [x] **Bước 12:** Bổ sung **Section "Bản Đồ Năng Lực & Gợi Ý Lộ Trình Học Tập Cá Nhân Hóa"** — Tích hợp Chart.js vẽ Radar Chart 5 chiều (Từ Vựng, Ngữ Pháp, Phản Xạ, Trí Nhớ, Kỷ Luật), thuật toán Spaced Repetition đề xuất 3 từ vựng yếu nhất cần ôn gấp và 1 bài học ngữ pháp dở dang/kế tiếp cần học trong ngày.
 - [x] **Bước 13 [MỚI]:** Tích hợp **Hệ thống Thành tựu động Real-time & Giao diện Quản trị Admin CRUD** — Chạy migration/seeder cho dynamic achievements, trigger Service mở khóa tức thì sau khi nộp bài ôn tập kèm hiệu ứng Confetti rực rỡ và Popup Modal chúc mừng Premium Glassmorphism, nút chia sẻ sao chép nhanh, đồng thời hoàn thành trang quản trị CRUD Admin đầy đủ tính năng thêm/sửa/xóa huy hiệu.
-

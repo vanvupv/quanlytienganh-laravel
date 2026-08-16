@@ -231,4 +231,3 @@ Nhằm đáp ứng yêu cầu theo dõi năng lực học thuật của học vi
   - [register.blade.php](file:///d:/xampp/htdocs/quanlytienganh/resources/views/auth/register.blade.php).
 - **Sidebar Layout:** [sidebar.blade.php](file:///d:/xampp/htdocs/quanlytienganh/resources/views/layouts/sidebar.blade.php).
 - **Routes:** Đăng ký nhóm Auth Routes tại [web.php](file:///d:/xampp/htdocs/quanlytienganh/routes/web.php).
-

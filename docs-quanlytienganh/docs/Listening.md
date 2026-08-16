@@ -207,6 +207,7 @@ Trang chi tiết tài liệu được thiết kế lại tối giản theo phong
 * **% Hoàn thành:** `(Số bài nghe có ít nhất 1 lần đạt / Tổng số bài nghe) * 100`.
 
 ---
+
 ### Models
 ```
 app/Models/
@@ -311,5 +312,5 @@ database/migrations/
 
 ---
 
-*Cập nhật lần cuối: {{ date('d/m/Y') }}*
+*Cập nhật lần cuối: 28/06/2026*
 *Tác giả: Antigravity AI Assistant*
