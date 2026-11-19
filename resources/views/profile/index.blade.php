@@ -419,8 +419,12 @@
             </h4>
             {{-- Module Tabs --}}
             <div class="d-flex gap-2" id="kp-tabs">
-                <button class="btn btn-sm fw-bold kp-tab active" data-tab="grammar"
+                <button class="btn btn-sm fw-bold kp-tab active" data-tab="roadmap"
                         style="border-radius: 8px; background: #2563eb; color: white; border: 1.5px solid #2563eb; font-size: 12.5px; padding: 5px 16px;">
+                    🗺️ Lộ Trình Học
+                </button>
+                <button class="btn btn-sm fw-bold kp-tab" data-tab="grammar"
+                        style="border-radius: 8px; background: white; color: #64748b; border: 1.5px solid #e2e8f0; font-size: 12.5px; padding: 5px 16px;">
                     📖 Ngữ Pháp
                 </button>
                 <button class="btn btn-sm fw-bold kp-tab" data-tab="vocab"
@@ -430,8 +434,86 @@
             </div>
         </div>
 
+        {{-- ── CUSTOM ROADMAP PANEL ── --}}
+        <div id="kp-roadmap-panel">
+            <div class="p-3 mb-4 rounded-3" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd;">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-dark" style="font-size: 14px;">🗺️ Tiến trình Lộ trình học tự xây dựng</span>
+                    <span class="fw-bold text-primary" style="font-size: 14px; font-family: monospace;" id="roadmapStepCountText">{{ $completedRoadmapSteps }} / {{ $totalRoadmapSteps }} mốc hoàn thành</span>
+                </div>
+                <div class="progress" style="height: 10px; border-radius: 8px; background: #dbeafe;">
+                    <div class="progress-bar" id="roadmapProgressBar" role="progressbar"
+                         style="width: {{ $roadmapProgressPct }}%; border-radius: 8px; background: linear-gradient(90deg, #2563eb, #0d9488);"
+                         aria-valuenow="{{ $roadmapProgressPct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-1" style="font-size: 11px; color: #1e40af;">
+                    <span id="roadmapProgressPctText">{{ $roadmapProgressPct }}% hoàn thành</span>
+                    <span>Tự thiết lập trong Cài đặt Hồ sơ</span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="text-muted small mb-0">Tích chọn vào ô bên dưới để cập nhật trạng thái hoàn thành mốc học tập cá nhân:</p>
+                <button class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 8px; font-size: 12px;" onclick="scrollToRoadmapSettings()">
+                    ⚙️ Quản lý / Chỉnh sửa Lộ Trình
+                </button>
+            </div>
+
+            <div class="d-flex flex-column gap-3 mb-2" id="roadmapListContainer">
+                @foreach($customRoadmap as $idx => $step)
+                    @php
+                        $stepId = $step['id'] ?? ('step_' . ($idx + 1));
+                        $isCompleted = ($step['status'] ?? '') === 'completed';
+                        $isInProgress = ($step['status'] ?? '') === 'in_progress';
+                        $catLabel = $step['category_label'] ?? match($step['category'] ?? 'custom') {
+                            'vocab' => '📘 Từ vựng',
+                            'grammar' => '📖 Ngữ pháp',
+                            'listening' => '🎧 Luyện nghe',
+                            'assessment' => '📝 Đề thi',
+                            default => '🎯 Khác'
+                        };
+                    @endphp
+                    <div class="p-3 rounded-3 border transition-all roadmap-card-item {{ $isCompleted ? 'bg-success bg-opacity-10 border-success border-opacity-25' : ($isInProgress ? 'bg-warning bg-opacity-10 border-warning border-opacity-25' : 'bg-light border-gray-200') }}"
+                         id="roadmap-card-{{ $stepId }}" style="border-radius: 12px !important; transition: all 0.2s ease;">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="pt-1">
+                                <input class="form-check-input roadmap-toggle-check" type="checkbox" 
+                                       data-step-id="{{ $stepId }}"
+                                       {{ $isCompleted ? 'checked' : '' }} 
+                                       style="width: 22px; height: 22px; cursor: pointer;">
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+                                    <h6 class="fw-bold mb-0 {{ $isCompleted ? 'text-decoration-line-through text-muted' : 'text-dark' }}" style="font-size: 15px;" id="step-title-{{ $stepId }}">
+                                        {{ $step['title'] ?? 'Mốc học tập' }}
+                                    </h6>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge rounded-pill bg-white text-dark border px-2.5 py-1 small fw-bold" style="font-size: 11px;">
+                                            {{ $catLabel }}
+                                        </span>
+                                        <span class="badge rounded-pill step-status-badge {{ $isCompleted ? 'bg-success' : ($isInProgress ? 'bg-warning text-dark' : 'bg-secondary') }}" 
+                                              id="step-status-badge-{{ $stepId }}" style="font-size: 11px;">
+                                            {{ $isCompleted ? '✓ Hoàn thành' : ($isInProgress ? '⚡ Đang học' : '⚪ Chưa bắt đầu') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                @if(!empty($step['notes']))
+                                    <p class="text-muted small mb-1" style="font-size: 12.5px;">{{ $step['notes'] }}</p>
+                                @endif
+                                @if(!empty($step['target_date']))
+                                    <div class="text-muted small d-flex align-items-center gap-1" style="font-size: 11.5px;">
+                                        📅 <span>Hạn hoàn thành: <strong>{{ \Carbon\Carbon::parse($step['target_date'])->format('d/m/Y') }}</strong></span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         {{-- ── GRAMMAR PANEL ── --}}
-        <div id="kp-grammar-panel">
+        <div id="kp-grammar-panel" style="display: none;">
             @if($grammarCategories->isEmpty())
                 <div class="text-center py-5">
                     <div style="font-size: 52px; opacity: 0.3; margin-bottom: 10px;">📖</div>
@@ -784,12 +866,12 @@
     </div>
 
     <!-- SECTION 5: EDIT PROFILE SETTINGS FORM -->
-    <div class="card border-0 shadow-sm p-4 text-start" style="border-radius: 16px; background: white;">
+    <div class="card border-0 shadow-sm p-4 text-start" style="border-radius: 16px; background: white;" id="profile-edit-section">
         <h4 class="fw-bold text-dark mb-4 d-flex align-items-center gap-2 border-bottom pb-3" style="font-size: 18px;">
-            ⚙️ Cấu Nhật Hồ Sơ & Điều Chỉnh Chỉ Số
+            ⚙️ Cập Nhật Hồ Sơ & Điều Chỉnh Chỉ Số
         </h4>
 
-        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="profileUpdateForm">
             @csrf
             
             <div class="row g-4">
@@ -852,13 +934,66 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Custom Roadmap Settings Builder -->
+                <div class="col-12 mt-4 pt-3 border-top" id="roadmap-settings-builder-block">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">🗺️ Thiết Lập Lộ Trình Học Cá Nhân</h5>
+                            <p class="text-muted small mb-0">Tự thiết lập các mốc bài học, hạn hoàn thành và mục tiêu cá nhân của bạn</p>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-bold px-3" id="addRoadmapStepBtn" style="border-radius: 8px;">
+                            ➕ Thêm Mốc Mới
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="custom_roadmap_json" id="custom_roadmap_json">
+
+                    <div class="d-flex flex-column gap-3" id="builderStepList">
+                        @foreach($customRoadmap as $idx => $step)
+                            @php $stepId = $step['id'] ?? ('step_' . ($idx + 1)); @endphp
+                            <div class="builder-step-row p-3 rounded-3 border bg-light position-relative" data-builder-id="{{ $stepId }}" style="border-radius: 12px !important;">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-md-5">
+                                        <label class="form-label mb-1 small fw-bold">Tên mốc học tập:</label>
+                                        <input type="text" class="form-control form-control-sm builder-title" value="{{ $step['title'] ?? '' }}" placeholder="Ví dụ: Hoàn thành 20 từ vựng..." style="border-radius: 6px;">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label mb-1 small fw-bold">Phân loại:</label>
+                                        <select class="form-select form-select-sm builder-category" style="border-radius: 6px;">
+                                            <option value="vocab" {{ ($step['category'] ?? '') == 'vocab' ? 'selected' : '' }}>📘 Từ vựng</option>
+                                            <option value="grammar" {{ ($step['category'] ?? '') == 'grammar' ? 'selected' : '' }}>📖 Ngữ pháp</option>
+                                            <option value="listening" {{ ($step['category'] ?? '') == 'listening' ? 'selected' : '' }}>🎧 Luyện nghe</option>
+                                            <option value="assessment" {{ ($step['category'] ?? '') == 'assessment' ? 'selected' : '' }}>📝 Đề thi</option>
+                                            <option value="custom" {{ ($step['category'] ?? '') == 'custom' ? 'selected' : '' }}>🎯 Khác</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label mb-1 small fw-bold">Hạn hoàn thành:</label>
+                                        <input type="date" class="form-control form-control-sm builder-date" value="{{ $step['target_date'] ?? '' }}" style="border-radius: 6px;">
+                                    </div>
+                                    <div class="col-md-1 text-end">
+                                        <label class="form-label mb-1 d-block small fw-bold">&nbsp;</label>
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-builder-step" style="border-radius: 6px;">🗑️</button>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <input type="text" class="form-control form-control-sm builder-notes" value="{{ $step['notes'] ?? '' }}" placeholder="Ghi chú chi tiết (nếu có)..." style="border-radius: 6px;">
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
 
             <div class="mt-4 pt-3 border-top text-end">
                 <button type="submit" class="btn btn-primary px-5 py-2.5 fw-bold shadow-sm" style="border-radius: 10px; background-color: #2563eb;">
-                    💾 Lưu Cập Nhật Hồ Sơ
+                    💾 Lưu Cập Nhật Hồ Sơ & Lộ Trình
                 </button>
             </div>
+
+        </form>
+    </div>
 
         </form>
     </div>
@@ -912,8 +1047,9 @@
             });
         }
 
-        // ── Knowledge Progress: Module Tab Switch (Ngữ Pháp ↔ Từ Vựng) ──
+        // ── Knowledge Progress: Module Tab Switch (Lộ Trình ↔ Ngữ Pháp ↔ Từ Vựng) ──
         var kpTabs    = document.querySelectorAll('.kp-tab');
+        var kpRoadmap = document.getElementById('kp-roadmap-panel');
         var kpGrammar = document.getElementById('kp-grammar-panel');
         var kpVocab   = document.getElementById('kp-vocab-panel');
 
@@ -922,6 +1058,7 @@
                 var target = this.dataset.tab;
 
                 // Toggle panel visibility
+                if (kpRoadmap) kpRoadmap.style.display = (target === 'roadmap') ? '' : 'none';
                 if (kpGrammar) kpGrammar.style.display = (target === 'grammar') ? '' : 'none';
                 if (kpVocab)   kpVocab.style.display   = (target === 'vocab')   ? '' : 'none';
 
@@ -936,6 +1073,184 @@
                 this.style.borderColor = '#2563eb';
             });
         });
+
+        // ── Interactive Roadmap Step Toggle ──
+        var toggleChecks = document.querySelectorAll('.roadmap-toggle-check');
+        toggleChecks.forEach(function(chk) {
+            chk.addEventListener('change', function() {
+                var stepId = this.dataset.stepId;
+                var isChecked = this.checked;
+                var newStatus = isChecked ? 'completed' : 'not_started';
+
+                // Send AJAX POST
+                fetch("{{ route('profile.roadmap.toggle') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        step_id: stepId,
+                        status: newStatus
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update UI elements
+                        var card = document.getElementById('roadmap-card-' + stepId);
+                        var badge = document.getElementById('step-status-badge-' + stepId);
+                        var title = document.getElementById('step-title-' + stepId);
+                        
+                        if (isChecked) {
+                            if (card) {
+                                card.className = 'p-3 rounded-3 border transition-all roadmap-card-item bg-success bg-opacity-10 border-success border-opacity-25';
+                            }
+                            if (badge) {
+                                badge.className = 'badge rounded-pill step-status-badge bg-success';
+                                badge.textContent = '✓ Hoàn thành';
+                            }
+                            if (title) {
+                                title.classList.add('text-decoration-line-through', 'text-muted');
+                                title.classList.remove('text-dark');
+                            }
+                        } else {
+                            if (card) {
+                                card.className = 'p-3 rounded-3 border transition-all roadmap-card-item bg-light border-gray-200';
+                            }
+                            if (badge) {
+                                badge.className = 'badge rounded-pill step-status-badge bg-secondary';
+                                badge.textContent = '⚪ Chưa bắt đầu';
+                            }
+                            if (title) {
+                                title.classList.remove('text-decoration-line-through', 'text-muted');
+                                title.classList.add('text-dark');
+                            }
+                        }
+
+                        // Update progress bar
+                        var countText = document.getElementById('roadmapStepCountText');
+                        var pctText = document.getElementById('roadmapProgressPctText');
+                        var progressBar = document.getElementById('roadmapProgressBar');
+
+                        if (countText) countText.textContent = data.completed + ' / ' + data.total + ' mốc hoàn thành';
+                        if (pctText) pctText.textContent = data.pct + '% hoàn thành';
+                        if (progressBar) {
+                            progressBar.style.width = data.pct + '%';
+                            progressBar.setAttribute('aria-valuenow', data.pct);
+                        }
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        });
+
+        // ── Roadmap Settings Builder ──
+        window.scrollToRoadmapSettings = function() {
+            var target = document.getElementById('roadmap-settings-builder-block');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        var addBtn = document.getElementById('addRoadmapStepBtn');
+        var builderList = document.getElementById('builderStepList');
+        var profileForm = document.getElementById('profileUpdateForm');
+
+        if (addBtn && builderList) {
+            addBtn.addEventListener('click', function() {
+                var newId = 'step_' + Date.now();
+                var newRow = document.createElement('div');
+                newRow.className = 'builder-step-row p-3 rounded-3 border bg-light position-relative';
+                newRow.style.borderRadius = '12px';
+                newRow.dataset.builderId = newId;
+                newRow.innerHTML = `
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <label class="form-label mb-1 small fw-bold">Tên mốc học tập:</label>
+                            <input type="text" class="form-control form-control-sm builder-title" placeholder="Ví dụ: Hoàn thành bài nghe TOEIC..." style="border-radius: 6px;">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label mb-1 small fw-bold">Phân loại:</label>
+                            <select class="form-select form-select-sm builder-category" style="border-radius: 6px;">
+                                <option value="vocab">📘 Từ vựng</option>
+                                <option value="grammar">📖 Ngữ pháp</option>
+                                <option value="listening">🎧 Luyện nghe</option>
+                                <option value="assessment">📝 Đề thi</option>
+                                <option value="custom" selected>🎯 Khác</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label mb-1 small fw-bold">Hạn hoàn thành:</label>
+                            <input type="date" class="form-control form-control-sm builder-date" style="border-radius: 6px;">
+                        </div>
+                        <div class="col-md-1 text-end">
+                            <label class="form-label mb-1 d-block small fw-bold">&nbsp;</label>
+                            <button type="button" class="btn btn-sm btn-outline-danger remove-builder-step" style="border-radius: 6px;">🗑️</button>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <input type="text" class="form-control form-control-sm builder-notes" placeholder="Ghi chú chi tiết..." style="border-radius: 6px;">
+                        </div>
+                    </div>
+                `;
+                builderList.appendChild(newRow);
+            });
+
+            builderList.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('remove-builder-step')) {
+                    var row = e.target.closest('.builder-step-row');
+                    if (row) {
+                        row.remove();
+                    }
+                }
+            });
+        }
+
+        if (profileForm) {
+            profileForm.addEventListener('submit', function() {
+                var steps = [];
+                var rows = document.querySelectorAll('.builder-step-row');
+                rows.forEach(function(row, idx) {
+                    var title = row.querySelector('.builder-title')?.value || '';
+                    if (title.trim() !== '') {
+                        var cat = row.querySelector('.builder-category')?.value || 'custom';
+                        var catLabel = matchCategoryLabel(cat);
+                        var date = row.querySelector('.builder-date')?.value || '';
+                        var notes = row.querySelector('.builder-notes')?.value || '';
+                        var stepId = row.dataset.builderId || ('step_' + (idx + 1));
+                        
+                        var existingCard = document.getElementById('roadmap-card-' + stepId);
+                        var existingCheck = existingCard?.querySelector('.roadmap-toggle-check');
+                        var status = existingCheck ? (existingCheck.checked ? 'completed' : 'not_started') : 'not_started';
+
+                        steps.push({
+                            id: stepId,
+                            title: title,
+                            category: cat,
+                            category_label: catLabel,
+                            target_date: date,
+                            status: status,
+                            notes: notes
+                        });
+                    }
+                });
+
+                var jsonInput = document.getElementById('custom_roadmap_json');
+                if (jsonInput) {
+                    jsonInput.value = JSON.stringify(steps);
+                }
+            });
+        }
+
+        function matchCategoryLabel(cat) {
+            switch(cat) {
+                case 'vocab': return '📘 Từ vựng';
+                case 'grammar': return '📖 Ngữ pháp';
+                case 'listening': return '🎧 Luyện nghe';
+                case 'assessment': return '📝 Đề thi';
+                default: return '🎯 Khác';
+            }
+        }
 
         // ── Vocabulary Stage Filter Chips ──
         var vocabChips = document.querySelectorAll('.vocab-stage-btn');

@@ -359,6 +359,56 @@ class ProfileController extends Controller
                 }
             }
 
+            // -----------------------------------------------------------------------
+            // 9. CUSTOM LEARNING ROADMAP — Lộ trình học tự xây dựng
+            // -----------------------------------------------------------------------
+            $defaultRoadmap = [
+                [
+                    'id' => 'step_1',
+                    'title' => 'Chinh phục 50 từ vựng Giai đoạn 1 (Nền tảng)',
+                    'category' => 'vocab',
+                    'category_label' => '📘 Từ vựng',
+                    'target_date' => date('Y-m-d', strtotime('+7 days')),
+                    'status' => 'completed',
+                    'notes' => 'Tập trung ôn Active Recall hàng ngày.'
+                ],
+                [
+                    'id' => 'step_2',
+                    'title' => 'Nắm vững 12 thì tiếng Anh cơ bản & Công thức',
+                    'category' => 'grammar',
+                    'category_label' => '📖 Ngữ pháp',
+                    'target_date' => date('Y-m-d', strtotime('+14 days')),
+                    'status' => 'in_progress',
+                    'notes' => 'Hoàn thành đủ 3/3 phần (Công thức, Cách dùng, Ví dụ).'
+                ],
+                [
+                    'id' => 'step_3',
+                    'title' => 'Hoàn thành 5 bài Luyện nghe chép chính tả (Dictation)',
+                    'category' => 'listening',
+                    'category_label' => '🎧 Luyện nghe',
+                    'target_date' => date('Y-m-d', strtotime('+21 days')),
+                    'status' => 'in_progress',
+                    'notes' => 'Đạt hiệu suất 80%+ trong bài nộp đầu tiên.'
+                ],
+                [
+                    'id' => 'step_4',
+                    'title' => 'Làm bài kiểm tra Đánh giá tổng hợp (Assessment)',
+                    'category' => 'assessment',
+                    'category_label' => '📝 Đề thi',
+                    'target_date' => date('Y-m-d', strtotime('+30 days')),
+                    'status' => 'not_started',
+                    'notes' => 'Đạt điểm min_score 80+.'
+                ]
+            ];
+
+            $customRoadmap = is_array($user->custom_roadmap) && count($user->custom_roadmap) > 0 
+                ? $user->custom_roadmap 
+                : $defaultRoadmap;
+
+            $totalRoadmapSteps = count($customRoadmap);
+            $completedRoadmapSteps = collect($customRoadmap)->where('status', 'completed')->count();
+            $roadmapProgressPct = $totalRoadmapSteps > 0 ? round(($completedRoadmapSteps / $totalRoadmapSteps) * 100) : 0;
+
             return view('profile.index', compact(
                 'user',
                 'vocabWordsCount',
@@ -383,7 +433,11 @@ class ProfileController extends Controller
                 'earnedCount',
                 'totalAchievements',
                 'weakestWords',
-                'suggestedGrammarLesson'
+                'suggestedGrammarLesson',
+                'customRoadmap',
+                'totalRoadmapSteps',
+                'completedRoadmapSteps',
+                'roadmapProgressPct'
             ));
     }
 
@@ -408,6 +462,14 @@ class ProfileController extends Controller
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Handle Custom Roadmap json payload if submitted
+        if ($request->has('custom_roadmap_json')) {
+            $decoded = json_decode($request->input('custom_roadmap_json'), true);
+            if (is_array($decoded)) {
+                $data['custom_roadmap'] = $decoded;
+            }
+        }
+
         // Handle Avatar File Upload
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
@@ -419,6 +481,279 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('profile.index')->with('success', 'Hồ sơ cá nhân và chỉ số học tập đã được cập nhật thành công!');
+        return redirect()->route('profile.index')->with('success', 'Hồ sơ cá nhân và lộ trình học tập đã được cập nhật thành công!');
+    }
+
+    /**
+     * AJAX Toggle completion status of a roadmap step.
+     */
+    public function toggleRoadmapStep(Request $request)
+    {
+        $user = auth()->user() ?? User::first();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Người dùng không tồn tại'], 404);
+        }
+
+        $stepId = $request->input('step_id');
+        $newStatus = $request->input('status'); // 'completed', 'in_progress', 'not_started'
+
+        $roadmap = is_array($user->custom_roadmap) && count($user->custom_roadmap) > 0 
+            ? $user->custom_roadmap 
+            : [
+                [
+                    'id' => 'step_1',
+                    'title' => 'Chinh phục 50 từ vựng Giai đoạn 1 (Nền tảng)',
+                    'category' => 'vocab',
+                    'category_label' => '📘 Từ vựng',
+                    'target_date' => date('Y-m-d', strtotime('+7 days')),
+                    'status' => 'completed',
+                    'notes' => 'Tập trung ôn Active Recall hàng ngày.'
+                ],
+                [
+                    'id' => 'step_2',
+                    'title' => 'Nắm vững 12 thì tiếng Anh cơ bản & Công thức',
+                    'category' => 'grammar',
+                    'category_label' => '📖 Ngữ pháp',
+                    'target_date' => date('Y-m-d', strtotime('+14 days')),
+                    'status' => 'in_progress',
+                    'notes' => 'Hoàn thành đủ 3/3 phần (Công thức, Cách dùng, Ví dụ).'
+                ],
+                [
+                    'id' => 'step_3',
+                    'title' => 'Hoàn thành 5 bài Luyện nghe chép chính tả (Dictation)',
+                    'category' => 'listening',
+                    'category_label' => '🎧 Luyện nghe',
+                    'target_date' => date('Y-m-d', strtotime('+21 days')),
+                    'status' => 'in_progress',
+                    'notes' => 'Đạt hiệu suất 80%+ trong bài nộp đầu tiên.'
+                ],
+                [
+                    'id' => 'step_4',
+                    'title' => 'Làm bài kiểm tra Đánh giá tổng hợp (Assessment)',
+                    'category' => 'assessment',
+                    'category_label' => '📝 Đề thi',
+                    'target_date' => date('Y-m-d', strtotime('+30 days')),
+                    'status' => 'not_started',
+                    'notes' => 'Đạt điểm min_score 80+.'
+                ]
+            ];
+
+        foreach ($roadmap as &$step) {
+            if (($step['id'] ?? '') === $stepId) {
+                $step['status'] = $newStatus;
+                break;
+            }
+        }
+
+        $user->custom_roadmap = $roadmap;
+        $user->save();
+
+        $totalSteps = count($roadmap);
+        $completedSteps = collect($roadmap)->where('status', 'completed')->count();
+        $progressPct = $totalSteps > 0 ? round(($completedSteps / $totalSteps) * 100) : 0;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã cập nhật mốc lộ trình!',
+            'completed' => $completedSteps,
+            'total' => $totalSteps,
+            'pct' => $progressPct,
+        ]);
+    }
+    /**
+     * Display the dedicated Custom Learning Roadmap dashboard (/roadmap).
+     */
+    public function showRoadmap()
+    {
+        $user = auth()->user() ?? User::first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => 'Học Viên Anh Ngữ',
+                'email' => 'student@englishhub.edu.vn',
+                'password' => bcrypt('123456'),
+                'english_level' => 'B1',
+                'target_goal' => 'IELTS 7.0 & Giao tiếp trôi chảy',
+                'learning_speed' => 'Trung bình',
+                'retention_rate' => 75
+            ]);
+        }
+
+        $defaultRoadmap = [
+            [
+                'id' => 'step_1',
+                'title' => 'Từ hỏi cơ bản',
+                'description' => 'What, Who, Where, When, Why, Which, How... → nắm toàn bộ cách dùng',
+                'icon' => '❓',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '6 – 8 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1 – 1,5 giờ',
+                'target_date' => date('Y-m-d', strtotime('+7 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_2',
+                'title' => 'Động từ / Trợ động từ',
+                'description' => 'do, does, did; cách đặt câu hỏi & phủ định',
+                'icon' => '📗',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '8 – 10 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1,5 – 2 giờ',
+                'target_date' => date('Y-m-d', strtotime('+10 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_3',
+                'title' => 'Câu điều kiện',
+                'description' => 'loại 0, 1, 2, 3 và cách nhận biết',
+                'icon' => '🔀',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '8 – 10 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '2 – 2,5 giờ',
+                'target_date' => date('Y-m-d', strtotime('+14 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_4',
+                'title' => 'Wish',
+                'description' => 'Wish hiện tại, quá khứ, tương lai',
+                'icon' => '⭐',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '5 – 6 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1 – 1,5 giờ',
+                'target_date' => date('Y-m-d', strtotime('+17 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_5',
+                'title' => 'Câu trực tiếp → câu gián tiếp',
+                'description' => 'lùi thì, đổi đại từ, đổi trạng từ thời gian/nơi chốn',
+                'icon' => '🔄',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '10 – 12 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '2,5 – 3 giờ',
+                'target_date' => date('Y-m-d', strtotime('+21 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_6',
+                'title' => 'So sánh',
+                'description' => 'tính từ ngắn, tính từ dài; so sánh hơn, nhất, bằng',
+                'icon' => '📊',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '8 – 10 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '2 giờ',
+                'target_date' => date('Y-m-d', strtotime('+24 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_7',
+                'title' => 'So / Such / Too / Enough',
+                'description' => 'cấu trúc và cách phân biệt',
+                'icon' => '🔤',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '6 – 8 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1,5 – 2 giờ',
+                'target_date' => date('Y-m-d', strtotime('+27 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_8',
+                'title' => 'Đại từ quan hệ',
+                'description' => 'Who – Whom – Which',
+                'icon' => '🔗',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '6 – 8 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1,5 – 2 giờ',
+                'target_date' => date('Y-m-d', strtotime('+30 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_9',
+                'title' => 'Where',
+                'description' => 'cách sử dụng Where trong mệnh đề / câu',
+                'icon' => '📍',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '4 – 5 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '45 – 60 phút',
+                'target_date' => date('Y-m-d', strtotime('+33 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_10',
+                'title' => 'When – That',
+                'description' => 'cách dùng trong câu và mệnh đề quan hệ',
+                'icon' => '⏰',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '5 – 6 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1 – 1,5 giờ',
+                'target_date' => date('Y-m-d', strtotime('+36 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ],
+            [
+                'id' => 'step_11',
+                'title' => 'Though – Although – Even though – Despite – In spite of',
+                'description' => 'nhượng bộ',
+                'icon' => '🔃',
+                'category' => 'grammar',
+                'category_label' => '📖 Ngữ pháp',
+                'pages' => '6 – 8 trang',
+                'material' => 'Gốc ngữ pháp Tiếng Anh – Basic',
+                'estimated_time' => '1,5 – 2 giờ',
+                'target_date' => date('Y-m-d', strtotime('+40 days')),
+                'status' => 'not_started',
+                'notes' => ''
+            ]
+        ];
+
+        $customRoadmap = is_array($user->custom_roadmap) && count($user->custom_roadmap) > 0 
+            ? $user->custom_roadmap 
+            : $defaultRoadmap;
+
+        $totalRoadmapSteps = count($customRoadmap);
+        $completedRoadmapSteps = collect($customRoadmap)->where('status', 'completed')->count();
+        $inProgressRoadmapSteps = collect($customRoadmap)->where('status', 'in_progress')->count();
+        $notStartedRoadmapSteps = collect($customRoadmap)->where('status', 'not_started')->count();
+        $roadmapProgressPct = $totalRoadmapSteps > 0 ? round(($completedRoadmapSteps / $totalRoadmapSteps) * 100) : 0;
+
+        return view('roadmap.index', compact(
+            'user',
+            'customRoadmap',
+            'totalRoadmapSteps',
+            'completedRoadmapSteps',
+            'inProgressRoadmapSteps',
+            'notStartedRoadmapSteps',
+            'roadmapProgressPct'
+        ));
     }
 }

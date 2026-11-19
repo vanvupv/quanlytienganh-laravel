@@ -226,6 +226,8 @@ Route::prefix('reading-analyzer')->name('reading.analyzer.')->group(function () 
 // User Smart Profile & Analytics Dashboard
 Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
 Route::post('/profile/update', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/roadmap/toggle', [\App\Http\Controllers\ProfileController::class, 'toggleRoadmapStep'])->name('profile.roadmap.toggle');
+Route::get('/roadmap', [\App\Http\Controllers\ProfileController::class, 'showRoadmap'])->name('roadmap.index');
 
 // Achievements Admin CRUD Panel
 Route::prefix('achievements-admin')->name('achievements.admin.')->middleware(['auth', 'admin'])->group(function () {

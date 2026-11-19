@@ -125,3 +125,10 @@ Hệ thống được thiết kế với chuẩn thẩm mỹ tối giản, tinh 
 * **Mục lục kiến thức thông minh (Interactive Table of Contents) [MỚI]:**
   * Bổ sung sidebar bên trái hiển thị danh mục các kiến thức đã tô màu theo thời gian thực.
   * Click vào từng mục sẽ kích hoạt **Cuộn mượt mà (Smooth Scroll)** đưa khối văn bản tương ứng vào giữa màn hình và chạy hiệu ứng **Nhấp nháy làm nổi bật (Flash animation)**.
+
+---
+
+## 📚 5. Danh Mục Tài Liệu Chuyên Đề Ngữ Pháp
+
+- **[Lời Gián Tiếp (Indirect Speech / Reported Speech)](file:///f:/htdocs/quanlytienganh/docs-quanlytienganh/docs/IndirectSpeech.md):** Tài liệu lý thuyết chuyên sâu, quy tắc lùi thì, đại từ, trạng từ, các cấu trúc câu trần thuật, câu hỏi, mệnh lệnh, động từ tường thuật đặc biệt và bài tập vận dụng có đáp án.
+

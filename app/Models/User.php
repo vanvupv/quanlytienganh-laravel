@@ -28,6 +28,7 @@ class User extends Authenticatable
         'target_goal',
         'learning_speed',
         'retention_rate',
+        'custom_roadmap',
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'custom_roadmap' => 'array',
     ];
 
     /**

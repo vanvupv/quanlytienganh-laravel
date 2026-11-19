@@ -1,0 +1,20 @@
+erDiagram
+    users ||--o{ vocab_study_logs : "logs"
+    users ||--o{ vocab_reviews : "reviews"
+    users ||--o{ user_assessments : "takes"
+
+    users {
+        int id PK
+        string name "Họ và tên học viên"
+        string email "Email đăng nhập"
+        string password "Mật khẩu đã mã hóa"
+        string avatar "Đường dẫn ảnh đại diện (nullable)"
+        text bio "Lời giới thiệu bản thân (nullable)"
+        string english_level "Trình độ CEFR: A1-C2"
+        string target_goal "Mục tiêu học tập (nullable)"
+        string learning_speed "Tốc độ học: Nhanh / Trung bình / Chậm"
+        int retention_rate "Tỷ lệ ghi nhớ tự đánh giá: 10-100"
+        timestamp remember_token "Token ghi nhớ đăng nhập"
+        timestamps created_at
+        timestamps updated_at
+    }

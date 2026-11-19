@@ -123,6 +123,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link fw-bold px-3 py-2 rounded-2 {{ request()->is('roadmap*') ? 'text-primary bg-light' : 'text-secondary' }}" href="{{ route('roadmap.index') }}" style="transition: all 0.2s;">
+            🗺️ Lộ Trình
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link fw-bold px-3 py-2 rounded-2 {{ request()->is('assessments*') ? 'text-primary bg-light' : 'text-secondary' }}" href="{{ route('assessments.index') }}" style="transition: all 0.2s;">
             📝 Đề Thi
           </a>
